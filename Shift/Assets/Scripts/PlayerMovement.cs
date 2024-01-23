@@ -190,7 +190,6 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-
         if ((isDashing || dashCooldown >= 0.3f) && IsGrounded() && _inputJump)
         {
             rb.velocity = new Vector2(3 * preferredAirSpeed * (facingRight ? 1 : -1), 0);
