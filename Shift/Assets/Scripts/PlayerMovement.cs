@@ -3,8 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] public GameObject normalMap;
+    [SerializeField] public GameObject etherMap;
+
     [SerializeField] private float jumpForce;
     [SerializeField] private float maxJumpTime;
     [SerializeField] private float preferredGroundSpeed;
@@ -17,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isDashing;
     private bool hasJumped;
     private float jumpTimeLeft;
+
     public Transform groundCheckLeft;
     public Transform groundCheckRight;
 
@@ -30,10 +35,13 @@ public class PlayerMovement : MonoBehaviour
     private bool inputJump;
     private Vector2 inputMove;
 
-    void Start()
-    {
+    private bool inputSwitch;
+
+    void Start(){
+        etherMap.SetActive(false);
         rb = GetComponent<Rigidbody2D>();
     }
+
 
     // Update is called once per frame
     void FixedUpdate()
@@ -41,6 +49,7 @@ public class PlayerMovement : MonoBehaviour
         Move(inputMove);
         Jump(inputJump);
     }
+
     public void OnMove(InputAction.CallbackContext context)
     {
         inputMove = context.ReadValue<Vector2>();
@@ -49,6 +58,14 @@ public class PlayerMovement : MonoBehaviour
     public void OnJump(InputAction.CallbackContext context)
     {
         inputJump = context.ReadValueAsButton();
+    }
+
+    public void OnSwitch(InputAction.CallbackContext context)
+    {
+       inputSwitch = context.ReadValueAsButton();
+       if(context.started){
+            Switch(inputSwitch);
+       }
     }
 
     void Move(Vector2 _inputMove)
@@ -87,6 +104,24 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+    
+        void Switch(bool _inputSwitch){
+        
+        if(_inputSwitch){
+            
+            if(etherMap.activeSelf){
+                Debug.Log("switch to normal");
+                etherMap.SetActive(false);
+                normalMap.SetActive(true);
+                
+            }else{
+                Debug.Log("switch to ether");
+                etherMap.SetActive(true);
+                normalMap.SetActive(false);
+                
+            }
+        }
+        }
 
     void Jump(bool _inputJump)
     {
