@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,22 +6,26 @@ using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 public class PlayerMovement : MonoBehaviour
 {
-
-    [SerializeField] private float moveSpeed;
-    [SerializeField] public float jumpForce;
-    [SerializeField] public Rigidbody2D rb;
-
-    
     [SerializeField] public GameObject normalMap;
     [SerializeField] public GameObject etherMap;
 
-    private bool isJumping;
-    private bool isGrounded;
+    [SerializeField] private float jumpForce;
+    [SerializeField] private float maxJumpTime;
+    [SerializeField] private float preferredGroundSpeed;
+    [SerializeField] private float preferredAirSpeed;
+    [SerializeField] private float groundAcceleration;
+    [SerializeField] private float airAcceleration;
+    [SerializeField] private float groundDeceleration;
+    [SerializeField] private float airDeceleration;
+
+    private bool isDashing;
+    private bool hasJumped;
+    private float jumpTimeLeft;
 
     public Transform groundCheckLeft;
     public Transform groundCheckRight;
 
-    private Vector3 velocity = Vector3.zero;
+    private Rigidbody2D rb;
 
     //Inputs
 
@@ -34,26 +39,17 @@ public class PlayerMovement : MonoBehaviour
 
     void Start(){
         etherMap.SetActive(false);
+        rb = GetComponent<Rigidbody2D>();
     }
 
 
     // Update is called once per frame
     void FixedUpdate()
     {
-                
-
-        isGrounded = Physics2D.OverlapArea(groundCheckLeft.position, groundCheckRight.position);
-
-        float horizontalMvmt = Input.GetAxis("Horizontal") *moveSpeed * Time.deltaTime;
-
         Move(inputMove);
         Jump(inputJump);
-        
-    
-
     }
 
-    
     public void OnMove(InputAction.CallbackContext context)
     {
         inputMove = context.ReadValue<Vector2>();
@@ -61,7 +57,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnJump(InputAction.CallbackContext context)
     {
-       inputJump = context.ReadValueAsButton();
+        inputJump = context.ReadValueAsButton();
     }
 
     public void OnSwitch(InputAction.CallbackContext context)
@@ -74,25 +70,42 @@ public class PlayerMovement : MonoBehaviour
 
     void Move(Vector2 _inputMove)
     {
-        Vector2 velocity = _inputMove * moveSpeed;
+        float drag = 0f;
+        if (!IsGrounded() && _inputMove.y < 0)
+            Fastfall();
 
-        Vector3 moveVelocity = transform.right * velocity.x + transform.forward * velocity.y;
-        moveVelocity.y = rb.velocity.y;
+        _inputMove.y = 0f;
 
-        rb.velocity = moveVelocity;
-    }
+        float xSpeed = Mathf.Abs(rb.velocity.x);
 
-    void Jump(bool _inputJump)
-    {
-        
-        if(_inputJump && isGrounded==true)
+        if (!isDashing)
         {
-            rb.AddForce(new Vector2(0f,jumpForce));
-            _inputJump=false;
+            bool signsEqual = Math.Sign(_inputMove.x) == Math.Sign(rb.velocity.x);
+            if (IsGrounded())
+            {
+                drag = signsEqual ? groundDeceleration : groundDeceleration * 5;
+                if (xSpeed <= preferredGroundSpeed || !signsEqual)
+                {
+                    rb.AddForce(new Vector2(_inputMove.x * groundAcceleration, 0f));
+                }
+            }
+            else
+            {
+                drag = Math.Sign(_inputMove.x) == Math.Sign(rb.velocity.x) ? airDeceleration : airDeceleration * 5;
+                if (xSpeed <= preferredAirSpeed || !signsEqual)
+                {
+                    rb.AddForce(new Vector2(_inputMove.x * airAcceleration, 0f));
+                }
+            }
+
+            if (Mathf.Abs(rb.velocity.x) > 0)
+            {
+                rb.AddForce(new Vector2(-Mathf.Sign(rb.velocity.x) * drag, 0f));
+            }
         }
     }
-
-    void Switch(bool _inputSwitch){
+    
+        void Switch(bool _inputSwitch){
         
         if(_inputSwitch){
             
@@ -108,6 +121,33 @@ public class PlayerMovement : MonoBehaviour
                 
             }
         }
+        }
 
+    void Jump(bool _inputJump)
+    {
+        if(_inputJump == false)
+            hasJumped = false;
+
+        if(IsGrounded()) {
+            jumpTimeLeft = maxJumpTime;
+        }
+
+        if (_inputJump && IsGrounded() && !hasJumped) {
+            rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+            hasJumped = true;
+        } else if(_inputJump && jumpTimeLeft > 0f && rb.velocity.y > 0f) {
+            rb.AddForce(new Vector2(0f, jumpForce * jumpTimeLeft), ForceMode2D.Impulse);
+            jumpTimeLeft -= Time.deltaTime;
+        }
+    }
+
+    void Fastfall()
+    {
+        //TODO
+    }
+
+    bool IsGrounded()
+    {
+        return Physics2D.OverlapArea(groundCheckLeft.position, groundCheckRight.position);
     }
 }
