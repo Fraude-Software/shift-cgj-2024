@@ -52,19 +52,43 @@ public class PlayerMovement : MonoBehaviour
     private bool inputSwitch;
     private float dashCooldown;
 
+    private Collider2D collider;
+
     void Start()
     {
         etherMap.SetActive(false);
         rb = GetComponent<Rigidbody2D>();
+        collider = GetComponent<Collider2D>();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+
+        if (IsGrounded())
+        {
+            jumpTimeLeft = maxJumpTime;
+        }
+
         SetFacing();
-        Jump(inputJump);
         Dash(inputDash);
         Move(inputMove);
+        MaintainJump();
+    }
+
+    private void MaintainJump()
+    {
+        if(collider.IsTouchingLayers(LayerMask.GetMask("EtherZone")))
+        {
+           return;
+        }
+
+        if(inputJump && rb.velocity.y > 0 && jumpTimeLeft > 0f)
+        {
+            Debug.Log("jumping high");
+            rb.AddForce(new Vector2(0f, jumpForce * jumpTimeLeft), ForceMode2D.Impulse);
+            jumpTimeLeft -= Time.deltaTime;
+        }
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -75,6 +99,9 @@ public class PlayerMovement : MonoBehaviour
     public void OnJump(InputAction.CallbackContext context)
     {
         inputJump = context.ReadValueAsButton();
+        if(context.started) {
+            Jump(inputJump);
+        }
     }
 
     public void OnSwitch(InputAction.CallbackContext context)
@@ -154,7 +181,16 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void Jump(bool _inputJump)
-    {
+    {   
+        if(collider.IsTouchingLayers(LayerMask.GetMask("EtherZone")))
+        {
+            //set velocity.y to 5
+            rb.velocity = new Vector2(rb.velocity.x, 5);
+            jumpTimeLeft = 0;
+            return;
+        }
+
+
         if ((isDashing || dashCooldown >= 0.3f) && IsGrounded() && _inputJump)
         {
             rb.velocity = new Vector2(3 * preferredAirSpeed * (facingRight ? 1 : -1), 0);
@@ -166,23 +202,10 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        if (_inputJump == false)
-            hasJumped = false;
-
-        if (IsGrounded())
-        {
-            jumpTimeLeft = maxJumpTime;
-        }
-
-        if (_inputJump && IsGrounded() && !hasJumped)
+        if (_inputJump && IsGrounded())
         {
             rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
             hasJumped = true;
-        }
-        else if (_inputJump && jumpTimeLeft > 0f && rb.velocity.y > 0f && hasJumped)
-        {
-            rb.AddForce(new Vector2(0f, jumpForce * jumpTimeLeft), ForceMode2D.Impulse);
-            jumpTimeLeft -= Time.deltaTime;
         }
     }
 
@@ -237,7 +260,7 @@ public class PlayerMovement : MonoBehaviour
             coyoTimeLeft -= Time.deltaTime;
             return true;
         }
-        if (Physics2D.OverlapArea(groundCheckLeft.position, groundCheckRight.position))
+        if (Physics2D.OverlapArea(groundCheckLeft.position, groundCheckRight.position, LayerMask.GetMask("Ground")))
         {
             coyoTimeLeft = coyoteTime;
             return true;
@@ -262,4 +285,6 @@ public class PlayerMovement : MonoBehaviour
     {
         return etherMap.activeSelf ? etherWorldGravityScale : normalWorldGravityScale;
     }
+
+
 }
