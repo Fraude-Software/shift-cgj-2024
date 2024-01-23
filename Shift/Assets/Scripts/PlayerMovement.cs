@@ -1,11 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 public class PlayerMovement : MonoBehaviour
 {
+    public float fastfallThreshold = -0.5f;
+    public float coyoteTime = 0.1f;
+
     [SerializeField] public GameObject normalMap;
     [SerializeField] public GameObject etherMap;
 
@@ -17,10 +21,22 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float airAcceleration;
     [SerializeField] private float groundDeceleration;
     [SerializeField] private float airDeceleration;
+    [SerializeField] private float dashSpeed;
+    [SerializeField] private float dashTime;
+    [SerializeField] private float switchCooldown;
+    [SerializeField] private float etherWorldGravityScale;
+    [SerializeField] private float normalWorldGravityScale;
 
+
+    private bool inputDash;
     private bool isDashing;
+    private bool hasDash;
+    private float dashTimeLeft;
     private bool hasJumped;
     private float jumpTimeLeft;
+    private bool facingRight = true;
+    private float coyoTimeLeft;
+    private float switchCooldownLeft;
 
     public Transform groundCheckLeft;
     public Transform groundCheckRight;
@@ -36,18 +52,22 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 inputMove;
 
     private bool inputSwitch;
+    private float dashCooldown;
 
-    void Start(){
+    void Start()
+    {
         etherMap.SetActive(false);
         rb = GetComponent<Rigidbody2D>();
     }
 
-
     // Update is called once per frame
     void FixedUpdate()
     {
+        SetFacing();
+        Dash(inputDash);
         Move(inputMove);
         Jump(inputJump);
+        Switch(inputSwitch);
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -62,92 +82,206 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnSwitch(InputAction.CallbackContext context)
     {
-       inputSwitch = context.ReadValueAsButton();
-       if(context.started){
-            Switch(inputSwitch);
-       }
+        inputSwitch = context.ReadValueAsButton();
+    }
+
+    public void OnDash(InputAction.CallbackContext context)
+    {
+        inputDash = context.ReadValueAsButton();
     }
 
     void Move(Vector2 _inputMove)
     {
+        if (isDashing)
+            return;
+
         float drag = 0f;
-        if (!IsGrounded() && _inputMove.y < 0)
-            Fastfall();
+        float xSpeed = Mathf.Abs(rb.velocity.x);
+
+        if (!IsGrounded() && _inputMove.y < fastfallThreshold)
+        {
+            Fastfall(true);
+        }
+        else
+        {
+            Fastfall(false);
+        }
 
         _inputMove.y = 0f;
 
-        float xSpeed = Mathf.Abs(rb.velocity.x);
-
-        if (!isDashing)
+        bool signsEqual = Math.Sign(_inputMove.x) == Math.Sign(rb.velocity.x);
+        if (IsGrounded())
         {
-            bool signsEqual = Math.Sign(_inputMove.x) == Math.Sign(rb.velocity.x);
-            if (IsGrounded())
+            drag = signsEqual ? groundDeceleration : groundDeceleration * 5;
+            if (xSpeed <= preferredGroundSpeed || !signsEqual)
             {
-                drag = signsEqual ? groundDeceleration : groundDeceleration * 5;
-                if (xSpeed <= preferredGroundSpeed || !signsEqual)
-                {
-                    rb.AddForce(new Vector2(_inputMove.x * groundAcceleration, 0f));
-                }
+                rb.AddForce(new Vector2(_inputMove.x * groundAcceleration, 0f));
+            }
+        }
+        else
+        {
+            drag = Math.Sign(_inputMove.x) == Math.Sign(rb.velocity.x) ? airDeceleration : airDeceleration * 5;
+            if (xSpeed <= preferredAirSpeed || !signsEqual)
+            {
+                rb.AddForce(new Vector2(_inputMove.x * airAcceleration, 0f));
+            }
+        }
+
+        if (Mathf.Abs(rb.velocity.x) > 0)
+        {
+            rb.AddForce(new Vector2(-Mathf.Sign(rb.velocity.x) * drag, 0f));
+        }
+
+    }
+
+    void Switch(bool _inputSwitch)
+    {
+        Debug.Log(switchCooldownLeft);
+
+        if (switchCooldownLeft > 0f)
+        {
+            switchCooldownLeft -= Time.deltaTime;
+            return;
+        }
+
+        if (_inputSwitch)
+        {
+            if (etherMap.activeSelf)
+            {
+                etherMap.SetActive(false);
+                normalMap.SetActive(true);
+                rb.velocity = new Vector2(0, 0);
+                rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+                
+                Invoke("SetWorldGravity", 0.1f);
             }
             else
             {
-                drag = Math.Sign(_inputMove.x) == Math.Sign(rb.velocity.x) ? airDeceleration : airDeceleration * 5;
-                if (xSpeed <= preferredAirSpeed || !signsEqual)
-                {
-                    rb.AddForce(new Vector2(_inputMove.x * airAcceleration, 0f));
-                }
-            }
-
-            if (Mathf.Abs(rb.velocity.x) > 0)
-            {
-                rb.AddForce(new Vector2(-Mathf.Sign(rb.velocity.x) * drag, 0f));
-            }
-        }
-    }
-    
-        void Switch(bool _inputSwitch){
-        
-        if(_inputSwitch){
-            
-            if(etherMap.activeSelf){
-                Debug.Log("switch to normal");
-                etherMap.SetActive(false);
-                normalMap.SetActive(true);
-                
-            }else{
-                Debug.Log("switch to ether");
                 etherMap.SetActive(true);
                 normalMap.SetActive(false);
-                
+                rb.velocity = new Vector2(0, 0);
+                rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+
+                Invoke("SetWorldGravity", 0.1f);
             }
+
+            switchCooldownLeft = switchCooldown;
         }
-        }
+    }
 
     void Jump(bool _inputJump)
     {
-        if(_inputJump == false)
+        if ((isDashing || dashCooldown >= 0.3f) && IsGrounded() && _inputJump)
+        {
+            rb.velocity = new Vector2(3 * preferredAirSpeed * (facingRight ? 1 : -1), 0);
+            rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+            hasJumped = true;
+            isDashing = false;
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            dashCooldown = 0.29f;
+            return;
+        }
+
+        if (_inputJump == false)
             hasJumped = false;
 
-        if(IsGrounded()) {
+        if (IsGrounded())
+        {
             jumpTimeLeft = maxJumpTime;
         }
 
-        if (_inputJump && IsGrounded() && !hasJumped) {
+        if (_inputJump && IsGrounded() && !hasJumped)
+        {
             rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
             hasJumped = true;
-        } else if(_inputJump && jumpTimeLeft > 0f && rb.velocity.y > 0f) {
+        }
+        else if (_inputJump && jumpTimeLeft > 0f && rb.velocity.y > 0f && hasJumped)
+        {
             rb.AddForce(new Vector2(0f, jumpForce * jumpTimeLeft), ForceMode2D.Impulse);
             jumpTimeLeft -= Time.deltaTime;
         }
     }
 
-    void Fastfall()
+    void Dash(bool _inputDash)
     {
-        //TODO
+        if (dashCooldown > 0f)
+        {
+            dashCooldown -= Time.deltaTime;
+        }
+
+        if (!hasDash && IsGrounded() && dashCooldown <= 0.2f)
+        {
+            hasDash = true;
+        }
+
+        if (hasDash && _inputDash && dashCooldown <= 0f)
+        {
+            isDashing = true;
+            hasDash = false;
+            rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+            rb.velocity = new Vector2(facingRight ? dashSpeed : -dashSpeed, 0f);
+            dashTimeLeft = dashTime;
+            dashCooldown = 0.5f;
+        }
+
+        if (isDashing)
+        {
+            dashTimeLeft -= Time.deltaTime;
+            if (dashTimeLeft <= 0f)
+            {
+                isDashing = false;
+                rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+                float newYSpeed = rb.velocity.y;
+                float newXSpeed = rb.velocity.x * 0.1f;
+                rb.velocity = new Vector2(newXSpeed, newYSpeed);
+            }
+        }
+    }
+
+    void Fastfall(bool _inputFastfall)
+    {
+        if (switchCooldownLeft > 0f)
+            return;
+
+        rb.gravityScale = _inputFastfall ? CurrentWorldGravityScale() * 2.5f : CurrentWorldGravityScale();
     }
 
     bool IsGrounded()
     {
-        return Physics2D.OverlapArea(groundCheckLeft.position, groundCheckRight.position);
+        if (coyoTimeLeft > 0f)
+        {
+            coyoTimeLeft -= Time.deltaTime;
+            return true;
+        }
+        if (Physics2D.OverlapArea(groundCheckLeft.position, groundCheckRight.position))
+        {
+            coyoTimeLeft = coyoteTime;
+            return true;
+        }
+
+        return false;
+    }
+
+    void SetFacing()
+    {
+        if (inputMove.x > 0)
+        {
+            facingRight = true;
+        }
+        else if (inputMove.x < 0)
+        {
+            facingRight = false;
+        }
+    }
+
+    float CurrentWorldGravityScale()
+    {
+        return etherMap.activeSelf ? etherWorldGravityScale : normalWorldGravityScale;
+    }
+
+    void SetWorldGravity()
+    {
+        rb.gravityScale = CurrentWorldGravityScale();
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 }
