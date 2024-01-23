@@ -62,6 +62,7 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         SetFacing();
+        Jump(inputJump);
         Dash(inputDash);
         Move(inputMove);
     }
@@ -74,9 +75,6 @@ public class PlayerMovement : MonoBehaviour
     public void OnJump(InputAction.CallbackContext context)
     {
         inputJump = context.ReadValueAsButton();
-        if(context.started) {
-            Jump(inputJump);
-        }
     }
 
     public void OnSwitch(InputAction.CallbackContext context)
