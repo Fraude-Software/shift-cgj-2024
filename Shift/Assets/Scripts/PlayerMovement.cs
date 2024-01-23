@@ -2,12 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 public class PlayerMovement : MonoBehaviour
 {
 
     [SerializeField] private float moveSpeed;
     [SerializeField] public float jumpForce;
     [SerializeField] public Rigidbody2D rb;
+
+    
+    [SerializeField] public GameObject normalMap;
+    [SerializeField] public GameObject etherMap;
 
     private bool isJumping;
     private bool isGrounded;
@@ -25,6 +30,11 @@ public class PlayerMovement : MonoBehaviour
     private bool inputJump;
     private Vector2 inputMove;
 
+    private bool inputSwitch;
+
+    void Start(){
+        etherMap.SetActive(false);
+    }
 
 
     // Update is called once per frame
@@ -39,25 +49,11 @@ public class PlayerMovement : MonoBehaviour
         Move(inputMove);
         Jump(inputJump);
         
-        /*if((KeyCode.Space) && isGrounded==true)// empeche le jump dans les airs
-        {
-            isJumping =true;
-        }
-        MovingPlayer(horizontalMvmt);*/
+    
 
     }
 
-    /*void MovingPlayer(float _horizontalMvmt)
-    {
-        Vector3 targetVelocity = new Vector2(_horizontalMvmt,rb.velocity.y);
-        rb.velocity= Vector3.SmoothDamp(rb.velocity, targetVelocity, ref velocity,0.05F);
-
-        if(isJumping==true){
-            rb.AddForce(new Vector2(0f,jumpForce));
-            isJumping=false;
-            
-        }
-    }*/
+    
     public void OnMove(InputAction.CallbackContext context)
     {
         inputMove = context.ReadValue<Vector2>();
@@ -66,6 +62,14 @@ public class PlayerMovement : MonoBehaviour
     public void OnJump(InputAction.CallbackContext context)
     {
        inputJump = context.ReadValueAsButton();
+    }
+
+    public void OnSwitch(InputAction.CallbackContext context)
+    {
+       inputSwitch = context.ReadValueAsButton();
+       if(context.started){
+            Switch(inputSwitch);
+       }
     }
 
     void Move(Vector2 _inputMove)
@@ -80,11 +84,30 @@ public class PlayerMovement : MonoBehaviour
 
     void Jump(bool _inputJump)
     {
-        Debug.Log(isGrounded);
+        
         if(_inputJump && isGrounded==true)
         {
             rb.AddForce(new Vector2(0f,jumpForce));
             _inputJump=false;
         }
+    }
+
+    void Switch(bool _inputSwitch){
+        
+        if(_inputSwitch){
+            
+            if(etherMap.activeSelf){
+                Debug.Log("switch to normal");
+                etherMap.SetActive(false);
+                normalMap.SetActive(true);
+                
+            }else{
+                Debug.Log("switch to ether");
+                etherMap.SetActive(true);
+                normalMap.SetActive(false);
+                
+            }
+        }
+
     }
 }
