@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d234e3d3e04336a438d5d9ed2b3c990e
+guid: 13e0e483dc2a7eb4ba45f34475ee756c
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -50,7 +50,7 @@ TextureImporter:
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spriteGenerateFallbackPhysicsShape: 0
+  spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -110,7 +110,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Ether_idle_running_0
+      name: overworld_runidlejump_0
       rect:
         serializedVersion: 2
         x: 0
@@ -124,14 +124,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7dffedf6cd741e8418d33d05750155aa
-      internalID: -1959538283
+      spriteID: 2a3b5794ec6139a49966a5cfa575fe4b
+      internalID: -139041021
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ether_idle_running_1
+      name: overworld_runidlejump_1
       rect:
         serializedVersion: 2
         x: 32
@@ -145,14 +145,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d80b13e69dc32cf429a98aa3c2f6af3c
-      internalID: -618209642
+      spriteID: 455215f7f5a79f74fa92b42ad03a6079
+      internalID: 969632701
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ether_idle_running_2
+      name: overworld_runidlejump_2
       rect:
         serializedVersion: 2
         x: 64
@@ -166,14 +166,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2c313034338953a419ea1b91d00d7312
-      internalID: 372338169
+      spriteID: 434d484782610144ab42b5ef062614c0
+      internalID: 1492651534
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ether_idle_running_3
+      name: overworld_runidlejump_3
       rect:
         serializedVersion: 2
         x: 96
@@ -187,14 +187,35 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7cef264cddc74584f8fa839f3772c8dd
-      internalID: 183834110
+      spriteID: ea89bf81d8fb6434792c6ff625de77c6
+      internalID: 944064186
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ether_idle_running_4
+      name: overworld_runidlejump_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 128
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c64d966ad71c0aa4eb89d7d8e89b2bd6
+      internalID: 1096382361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: overworld_runidlejump_5
       rect:
         serializedVersion: 2
         x: 0
@@ -208,14 +229,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e697e0901a3e0ca4abdf4ff5d06bf0c4
-      internalID: 995346352
+      spriteID: 57cc90bb7019e6342ab9526f4dbdfe52
+      internalID: 428149880
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ether_idle_running_5
+      name: overworld_runidlejump_6
       rect:
         serializedVersion: 2
         x: 32
@@ -229,14 +250,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3519c0e3ef466f943a2450134bbfb1f2
-      internalID: -1300523222
+      spriteID: e4c083c3bc467ad45b59735d0c85b8a2
+      internalID: 1753414652
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ether_idle_running_6
+      name: overworld_runidlejump_7
       rect:
         serializedVersion: 2
         x: 64
@@ -250,14 +271,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f5a66026b31051a4aa2fbcc80c1ab4bf
-      internalID: 1746061498
+      spriteID: 186738b400f66f347a82be37986226bc
+      internalID: 1698779071
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ether_idle_running_7
+      name: overworld_runidlejump_8
       rect:
         serializedVersion: 2
         x: 96
@@ -271,14 +292,35 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 993dc6229b6d6ef4da18813d997a1c2c
-      internalID: -1084123916
+      spriteID: bcf7d6b5fa9a465499dc4ec059a33f71
+      internalID: -604649936
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ether_idle_running_8
+      name: overworld_runidlejump_9
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e58f54daf037f634ea6834876c1b350f
+      internalID: -745857767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: overworld_runidlejump_10
       rect:
         serializedVersion: 2
         x: 0
@@ -292,14 +334,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1812f24c54bc84640967b2a0c183e537
-      internalID: 1205298628
+      spriteID: 9fa552636b9c5df498d731741aa6273a
+      internalID: -1431512377
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ether_idle_running_9
+      name: overworld_runidlejump_11
       rect:
         serializedVersion: 2
         x: 32
@@ -313,14 +355,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6f0f7a6a83b4f1541b45a07c5e7f5a5f
-      internalID: -2001297322
+      spriteID: 8ad2224a53069a94891a17d3708b0f93
+      internalID: 168325898
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ether_idle_running_10
+      name: overworld_runidlejump_12
       rect:
         serializedVersion: 2
         x: 64
@@ -334,14 +376,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 88f79c74f9883f540ad935cdcf7acb3e
-      internalID: -1636472493
+      spriteID: cbb8081b41ff77e49b0bf5fc0d1c198b
+      internalID: -2096868259
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ether_idle_running_11
+      name: overworld_runidlejump_13
       rect:
         serializedVersion: 2
         x: 96
@@ -355,14 +397,35 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 13a45112ee3827d46ae5b45906150c95
-      internalID: -164479875
+      spriteID: adfba6ccd88238d4aaa527094b26e3f1
+      internalID: -1354130479
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ether_idle_running_12
+      name: overworld_runidlejump_14
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 00d311232ae34d04bbb58b2672d965aa
+      internalID: -1757049814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: overworld_runidlejump_15
       rect:
         serializedVersion: 2
         x: 0
@@ -376,14 +439,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5d4bf219b4c2cc3418f3d9c7b9aa4390
-      internalID: 1314310828
+      spriteID: 2917c7a5d6bf7e3409d943f328246fc5
+      internalID: 572479949
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ether_idle_running_13
+      name: overworld_runidlejump_16
       rect:
         serializedVersion: 2
         x: 32
@@ -397,14 +460,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3cb4b42c0090b9742939a3fc1ea71767
-      internalID: -1698466444
+      spriteID: 49ba216244e261d46ba3aa4befcca012
+      internalID: -1892929792
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ether_idle_running_14
+      name: overworld_runidlejump_17
       rect:
         serializedVersion: 2
         x: 64
@@ -418,14 +481,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 44eaf5003bdd19749ba987df7944a58e
-      internalID: -201221075
+      spriteID: 2c1a69237029ca943b8cf63be3510fcc
+      internalID: 727125436
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ether_idle_running_15
+      name: overworld_runidlejump_18
       rect:
         serializedVersion: 2
         x: 96
@@ -439,14 +502,35 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c5d4e359e7316964dbf7fc33cc83d62e
-      internalID: 1607117159
+      spriteID: 6941935883232f9498b949b4623992e9
+      internalID: 1217659165
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ether_idle_running_16
+      name: overworld_runidlejump_19
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ebf5633d4b96bca4b80e7f40face4d4a
+      internalID: -1989719614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: overworld_runidlejump_20
       rect:
         serializedVersion: 2
         x: 0
@@ -460,14 +544,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 134ce1842e94d2f498fe9661098e447c
-      internalID: 1046205250
+      spriteID: d5a849933f312b843b45725a51fa9e38
+      internalID: 1068691624
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ether_idle_running_17
+      name: overworld_runidlejump_21
       rect:
         serializedVersion: 2
         x: 32
@@ -481,14 +565,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9b339a7f7903e95458eb9ad16d6e05c2
-      internalID: 436706133
+      spriteID: d1bc570681b18244b84b72175ebabf53
+      internalID: -325407285
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ether_idle_running_18
+      name: overworld_runidlejump_22
       rect:
         serializedVersion: 2
         x: 64
@@ -502,8 +586,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 35fc09c4074dc664e84ff99acb082d1c
-      internalID: 2046824237
+      spriteID: 5f3153404c10d3942aff17ea202fa8af
+      internalID: -681823243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: overworld_runidlejump_23
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: afe2990db96cde3468133bc32e2756d2
+      internalID: 1963316885
       vertices: []
       indices: 
       edges: []
@@ -519,25 +624,30 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Ether_idle_running_0: -1959538283
-      Ether_idle_running_1: -618209642
-      Ether_idle_running_10: -1636472493
-      Ether_idle_running_11: -164479875
-      Ether_idle_running_12: 1314310828
-      Ether_idle_running_13: -1698466444
-      Ether_idle_running_14: -201221075
-      Ether_idle_running_15: 1607117159
-      Ether_idle_running_16: 1046205250
-      Ether_idle_running_17: 436706133
-      Ether_idle_running_18: 2046824237
-      Ether_idle_running_2: 372338169
-      Ether_idle_running_3: 183834110
-      Ether_idle_running_4: 995346352
-      Ether_idle_running_5: -1300523222
-      Ether_idle_running_6: 1746061498
-      Ether_idle_running_7: -1084123916
-      Ether_idle_running_8: 1205298628
-      Ether_idle_running_9: -2001297322
+      overworld_runidlejump_0: -139041021
+      overworld_runidlejump_1: 969632701
+      overworld_runidlejump_10: -1431512377
+      overworld_runidlejump_11: 168325898
+      overworld_runidlejump_12: -2096868259
+      overworld_runidlejump_13: -1354130479
+      overworld_runidlejump_14: -1757049814
+      overworld_runidlejump_15: 572479949
+      overworld_runidlejump_16: -1892929792
+      overworld_runidlejump_17: 727125436
+      overworld_runidlejump_18: 1217659165
+      overworld_runidlejump_19: -1989719614
+      overworld_runidlejump_2: 1492651534
+      overworld_runidlejump_20: 1068691624
+      overworld_runidlejump_21: -325407285
+      overworld_runidlejump_22: -681823243
+      overworld_runidlejump_23: 1963316885
+      overworld_runidlejump_3: 944064186
+      overworld_runidlejump_4: 1096382361
+      overworld_runidlejump_5: 428149880
+      overworld_runidlejump_6: 1753414652
+      overworld_runidlejump_7: 1698779071
+      overworld_runidlejump_8: -604649936
+      overworld_runidlejump_9: -745857767
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

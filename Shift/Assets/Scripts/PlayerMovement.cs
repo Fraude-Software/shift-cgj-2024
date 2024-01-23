@@ -187,6 +187,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Jump(bool _inputJump)
     {   
+        
+        animator.SetFloat("Height",rb.velocity.y);
+
         if(collider.IsTouchingLayers(LayerMask.GetMask("EtherZone")))
         {
             //set velocity.y to 5
