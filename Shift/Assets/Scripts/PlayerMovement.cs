@@ -26,6 +26,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float etherWorldGravityScale;
     [SerializeField] private float normalWorldGravityScale;
 
+    [SerializeField] private Animator animator;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
     private bool inputDash;
     private bool isDashing;
     private bool hasDash;
@@ -119,6 +122,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Move(Vector2 _inputMove)
     {
+
+        float characterVelocity = Mathf.Abs(rb.velocity.x);
+        animator.SetFloat("Speed",characterVelocity);
         if (isDashing)
             return;
 
@@ -158,7 +164,6 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.AddForce(new Vector2(-Mathf.Sign(rb.velocity.x) * drag, 0f));
         }
-
     }
 
     void Switch(bool _inputSwitch)
@@ -269,15 +274,25 @@ public class PlayerMovement : MonoBehaviour
         return false;
     }
 
+    void Flip(float _velocity){
+        if(_velocity > 0.1f){
+            
+        }else if(_velocity < -0.1f){
+            
+        }
+    }
+
     void SetFacing()
     {
         if (inputMove.x > 0)
         {
             facingRight = true;
+            spriteRenderer.flipX = true;
         }
         else if (inputMove.x < 0)
         {
             facingRight = false;
+            spriteRenderer.flipX = false;
         }
     }
 
@@ -285,6 +300,5 @@ public class PlayerMovement : MonoBehaviour
     {
         return etherMap.activeSelf ? etherWorldGravityScale : normalWorldGravityScale;
     }
-
 
 }
