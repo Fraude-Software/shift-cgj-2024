@@ -18,6 +18,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float groundDeceleration;
     [SerializeField] private float airDeceleration;
 
+    [SerializeField] private Animator animator;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
     private bool isDashing;
     private bool hasJumped;
     private float jumpTimeLeft;
@@ -48,6 +51,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Move(inputMove);
         Jump(inputJump);
+        Flip(rb.velocity.x);
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -70,6 +74,10 @@ public class PlayerMovement : MonoBehaviour
 
     void Move(Vector2 _inputMove)
     {
+
+        float characterVelocity = Mathf.Abs(rb.velocity.x);
+        animator.SetFloat("Speed",characterVelocity);
+
         float drag = 0f;
         if (!IsGrounded() && _inputMove.y < 0)
             Fastfall();
@@ -103,6 +111,9 @@ public class PlayerMovement : MonoBehaviour
                 rb.AddForce(new Vector2(-Mathf.Sign(rb.velocity.x) * drag, 0f));
             }
         }
+
+        
+
     }
     
         void Switch(bool _inputSwitch){
@@ -150,4 +161,13 @@ public class PlayerMovement : MonoBehaviour
     {
         return Physics2D.OverlapArea(groundCheckLeft.position, groundCheckRight.position);
     }
+
+    void Flip(float _velocity){
+        if(_velocity > 0.1f){
+            spriteRenderer.flipX = true;
+        }else if(_velocity < -0.1f){
+            spriteRenderer.flipX = false;
+        }
+    }
+
 }
