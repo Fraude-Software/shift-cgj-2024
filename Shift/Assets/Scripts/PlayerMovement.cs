@@ -23,10 +23,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float airDeceleration;
     [SerializeField] private float dashSpeed;
     [SerializeField] private float dashTime;
-    [SerializeField] private float switchCooldown;
     [SerializeField] private float etherWorldGravityScale;
     [SerializeField] private float normalWorldGravityScale;
-
 
     private bool inputDash;
     private bool isDashing;
@@ -66,8 +64,6 @@ public class PlayerMovement : MonoBehaviour
         SetFacing();
         Dash(inputDash);
         Move(inputMove);
-        Jump(inputJump);
-        Switch(inputSwitch);
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -78,11 +74,17 @@ public class PlayerMovement : MonoBehaviour
     public void OnJump(InputAction.CallbackContext context)
     {
         inputJump = context.ReadValueAsButton();
+        if(context.started) {
+            Jump(inputJump);
+        }
     }
 
     public void OnSwitch(InputAction.CallbackContext context)
     {
         inputSwitch = context.ReadValueAsButton();
+        if(context.started) {
+            Switch(inputSwitch);
+        }
     }
 
     public void OnDash(InputAction.CallbackContext context)
@@ -98,7 +100,7 @@ public class PlayerMovement : MonoBehaviour
         float drag = 0f;
         float xSpeed = Mathf.Abs(rb.velocity.x);
 
-        if (!IsGrounded() && _inputMove.y < fastfallThreshold)
+        if (!IsGrounded() && _inputMove.y < fastfallThreshold && rb.velocity.y < 0f)
         {
             Fastfall(true);
         }
@@ -136,36 +138,20 @@ public class PlayerMovement : MonoBehaviour
 
     void Switch(bool _inputSwitch)
     {
-        Debug.Log(switchCooldownLeft);
-
-        if (switchCooldownLeft > 0f)
-        {
-            switchCooldownLeft -= Time.deltaTime;
-            return;
-        }
-
         if (_inputSwitch)
         {
             if (etherMap.activeSelf)
             {
                 etherMap.SetActive(false);
                 normalMap.SetActive(true);
-                rb.velocity = new Vector2(0, 0);
-                rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
-                
-                Invoke("SetWorldGravity", 0.1f);
+                rb.gravityScale = normalWorldGravityScale;
             }
             else
             {
                 etherMap.SetActive(true);
                 normalMap.SetActive(false);
-                rb.velocity = new Vector2(0, 0);
-                rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
-
-                Invoke("SetWorldGravity", 0.1f);
+                rb.gravityScale = etherWorldGravityScale;
             }
-
-            switchCooldownLeft = switchCooldown;
         }
     }
 
@@ -277,11 +263,5 @@ public class PlayerMovement : MonoBehaviour
     float CurrentWorldGravityScale()
     {
         return etherMap.activeSelf ? etherWorldGravityScale : normalWorldGravityScale;
-    }
-
-    void SetWorldGravity()
-    {
-        rb.gravityScale = CurrentWorldGravityScale();
-        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 }
