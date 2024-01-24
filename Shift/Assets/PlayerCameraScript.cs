@@ -32,6 +32,8 @@ public class PlayerCameraScript : MonoBehaviour
 
                 brain.ActiveVirtualCamera.Priority = 10;
                 vcam.GetComponent<CinemachineVirtualCamera>().Priority = 11;
+
+                playerMovement.ChangeLevel(levelData);
                 return;
             }
         }
