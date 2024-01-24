@@ -242,7 +242,7 @@ public partial class @Shift: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""4ec96989-c19d-4de3-bfe5-397af1ca707b"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
