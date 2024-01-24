@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
@@ -49,6 +50,9 @@ public class PlayerMovement : MonoBehaviour
     private float switchCooldownLeft;
     private bool isDead;
 
+    private Camera mainCamera;
+    private Animator camBackgroundAnimator;
+
     public Transform groundCheckLeft;
     public Transform groundCheckRight;
 
@@ -71,6 +75,8 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
+        mainCamera = Camera.main;
+        camBackgroundAnimator = mainCamera.GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
@@ -218,12 +224,14 @@ public class PlayerMovement : MonoBehaviour
                 CurrentLevelData.EtherMap.SetActive(false);
                 CurrentLevelData.NormalMap.SetActive(true);
                 rb.gravityScale = normalWorldGravityScale;
+                camBackgroundAnimator.SetBool("isEther", false);
             }
             else
             {
                 CurrentLevelData.EtherMap.SetActive(true);
                 CurrentLevelData.NormalMap.SetActive(false);
                 rb.gravityScale = etherWorldGravityScale;
+                camBackgroundAnimator.SetBool("isEther", true);
             }
         }
     }
