@@ -22,6 +22,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float dashTime;
     [SerializeField] private float etherWorldGravityScale;
     [SerializeField] private float normalWorldGravityScale;
+    [SerializeField] private float respawnTime;
 
     [SerializeField] private Animator animator;
     [SerializeField] private SpriteRenderer spriteRenderer;
@@ -45,6 +46,7 @@ public class PlayerMovement : MonoBehaviour
     private bool facingRight = true;
     private float coyoTimeLeft;
     private float switchCooldownLeft;
+    private bool isDead;
 
     public Transform groundCheckLeft;
     public Transform groundCheckRight;
