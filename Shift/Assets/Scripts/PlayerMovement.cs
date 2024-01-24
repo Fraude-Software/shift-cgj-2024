@@ -22,10 +22,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float dashTime;
     [SerializeField] private float etherWorldGravityScale;
     [SerializeField] private float normalWorldGravityScale;
-    [SerializeField] private float respawnTime;
 
     [SerializeField] private Animator animator;
     [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private ParticleSystem deathParticles;
+    [SerializeField] private ParticleSystem respawnParticles;
 
     public LevelData CurrentLevelData { get; set; }
 
@@ -75,6 +76,12 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if(isDead)
+        {
+            return;
+        }
+
+        CheckFall();
 
         if (IsGrounded())
         {
@@ -104,6 +111,14 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             animator.SetBool("isGrounded", false);
+        }
+    }
+
+    private void CheckFall()
+    {
+        if (Physics2D.OverlapArea(groundCheckLeft.position, groundCheckRight.position, LayerMask.GetMask("Death")) || transform.position.y < -100)
+        {
+            Die();
         }
     }
 
@@ -243,6 +258,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Dash(bool _inputDash)
     {
+        if(CurrentLevelData.EtherMap.activeSelf)
+        {
+            return;
+        }
+
         if (dashCooldown > 0f)
         {
             dashCooldown -= Time.deltaTime;
@@ -321,4 +341,59 @@ public class PlayerMovement : MonoBehaviour
         return (bool)(CurrentLevelData?.EtherMap.activeSelf) ? etherWorldGravityScale : normalWorldGravityScale;
     }
 
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Spikes"))
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        if (isDead)
+            return;
+
+        isDead = true;
+        rb.velocity = Vector2.zero;
+        rb.gravityScale = 0f;
+        rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        spriteRenderer.forceRenderingOff = true;
+
+        var dp = Instantiate(deathParticles, transform.position, Quaternion.identity);
+        dp.Play();
+        Destroy(dp.gameObject, 5f);
+
+        StartCoroutine(RespawnAfterDelay());
+    }
+
+    IEnumerator RespawnAfterDelay()
+    {
+        yield return new WaitForSeconds(0.6f);
+        transform.position = CurrentLevelData.PlayerSpawn.position;
+        respawnParticles.Play();
+        yield return new WaitForSeconds(0.3f);
+        spriteRenderer.forceRenderingOff = false;
+        Respawn();
+    }
+
+    void Respawn()
+    {
+        isDead = false;
+        animator.SetBool("isDead", false);
+        rb.gravityScale = normalWorldGravityScale;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        
+
+        //set variables to default
+        hasDash = false;
+        hasJumped = false;
+        isDashing = false;
+        facingRight = true;
+        dashTimeLeft = 0f;
+        jumpTimeLeft = 0f;
+        coyoTimeLeft = 0f;
+        switchCooldownLeft = 0f;
+        dashCooldown = 0f;
+    }
 }
