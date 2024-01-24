@@ -112,7 +112,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (inputJump && rb.velocity.y > 0 && jumpTimeLeft > 0f)
         {
-            Debug.Log("jumping high");
             rb.AddForce(new Vector2(0f, jumpForce * jumpTimeLeft), ForceMode2D.Impulse);
             jumpTimeLeft -= Time.deltaTime;
         }

@@ -14,14 +14,26 @@ public class PlayerCameraScript : MonoBehaviour
         brain = FindObjectOfType<CinemachineBrain>();
     }
 
-    // Start is called before the first frame update
-    void OnTriggerEnter2D(Collider2D other)
+    void Update()
     {
-        LevelData levelData = other.GetComponent<LevelData>();
-        playerMovement.CurrentLevelData = levelData;
-        CinemachineVirtualCamera vcam = levelData.VCam;
-        vcam.Follow = this.transform;
-        brain.ActiveVirtualCamera.Priority = 10;
-        vcam.Priority = 11;
+        var collider = GetComponent<Collider2D>();
+        //list all colliders that are touching this collider
+        var colliders = Physics2D.OverlapBoxAll(collider.bounds.center, collider.bounds.size, 0.0f);
+        
+        foreach (var other in colliders)
+        {
+            LevelData levelData = other.GetComponent<LevelData>();
+
+            if (levelData != null)
+            {
+                CinemachineVirtualCamera vcam = levelData.VCam;
+
+                vcam.Follow = this.transform;
+
+                brain.ActiveVirtualCamera.Priority = 10;
+                vcam.GetComponent<CinemachineVirtualCamera>().Priority = 11;
+                return;
+            }
+        }
     }
 }
