@@ -38,13 +38,13 @@ public class PlayerMecanics : MonoBehaviour
         if(inputFire){
             Vector3 vector =default;
             if(spriteRenderer.flipX){
-                vector = transform.position + Vector3.left;
-                
-                direction = true;
-            }else{
                 vector = transform.position + Vector3.right;
-               
+                
                 direction = false;
+            }else{
+                vector = transform.position + Vector3.left;
+               
+                direction = true;
                 
             }
 
