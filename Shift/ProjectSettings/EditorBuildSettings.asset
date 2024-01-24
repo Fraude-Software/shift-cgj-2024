@@ -44,4 +44,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Levels/tableau 7.unity
     guid: 48e2241c96588ef45b2348fa62f3fa41
+  - enabled: 1
+    path: Assets/Scenes/PoemIntro.unity
+    guid: 990da96cc8ee76248a99f8371416870c
   m_configObjects: {}
