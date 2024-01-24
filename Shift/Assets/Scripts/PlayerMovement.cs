@@ -10,9 +10,6 @@ public class PlayerMovement : MonoBehaviour
     public float fastfallThreshold = -0.5f;
     public float coyoteTime = 0.1f;
 
-    [SerializeField] public GameObject normalMap;
-    [SerializeField] public GameObject etherMap;
-
     [SerializeField] private float jumpForce;
     [SerializeField] private float maxJumpTime;
     [SerializeField] private float preferredGroundSpeed;
@@ -28,6 +25,20 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private Animator animator;
     [SerializeField] private SpriteRenderer spriteRenderer;
+
+    private LevelData currentLevelData;
+
+    public LevelData CurrentLevelData
+    {
+        get
+        {
+            return currentLevelData;
+        }
+        set
+        {
+            currentLevelData = value;
+        }
+    }
 
     private bool inputDash;
     private bool isDashing;
@@ -55,13 +66,12 @@ public class PlayerMovement : MonoBehaviour
     private bool inputSwitch;
     private float dashCooldown;
 
-    private Collider2D collider;
+    private Collider2D col;
 
     void Start()
     {
-        etherMap.SetActive(false);
         rb = GetComponent<Rigidbody2D>();
-        collider = GetComponent<Collider2D>();
+        col = GetComponent<Collider2D>();
     }
 
     // Update is called once per frame
@@ -81,12 +91,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void MaintainJump()
     {
-        if(collider.IsTouchingLayers(LayerMask.GetMask("EtherZone")))
+        if (col.IsTouchingLayers(LayerMask.GetMask("EtherZone")))
         {
-           return;
+            return;
         }
 
-        if(inputJump && rb.velocity.y > 0 && jumpTimeLeft > 0f)
+        if (inputJump && rb.velocity.y > 0 && jumpTimeLeft > 0f)
         {
             Debug.Log("jumping high");
             rb.AddForce(new Vector2(0f, jumpForce * jumpTimeLeft), ForceMode2D.Impulse);
@@ -102,7 +112,8 @@ public class PlayerMovement : MonoBehaviour
     public void OnJump(InputAction.CallbackContext context)
     {
         inputJump = context.ReadValueAsButton();
-        if(context.started) {
+        if (context.started)
+        {
             Jump(inputJump);
         }
     }
@@ -110,7 +121,8 @@ public class PlayerMovement : MonoBehaviour
     public void OnSwitch(InputAction.CallbackContext context)
     {
         inputSwitch = context.ReadValueAsButton();
-        if(context.started) {
+        if (context.started)
+        {
             Switch(inputSwitch);
         }
     }
@@ -122,9 +134,8 @@ public class PlayerMovement : MonoBehaviour
 
     void Move(Vector2 _inputMove)
     {
-
         float characterVelocity = Mathf.Abs(rb.velocity.x);
-        animator.SetFloat("Speed",characterVelocity);
+        animator.SetFloat("Speed", characterVelocity);
         if (isDashing)
             return;
 
@@ -170,27 +181,27 @@ public class PlayerMovement : MonoBehaviour
     {
         if (_inputSwitch)
         {
-            if (etherMap.activeSelf)
+            if (currentLevelData.EtherMap.activeSelf)
             {
-                etherMap.SetActive(false);
-                normalMap.SetActive(true);
+                currentLevelData.EtherMap.SetActive(false);
+                currentLevelData.NormalMap.SetActive(true);
                 rb.gravityScale = normalWorldGravityScale;
             }
             else
             {
-                etherMap.SetActive(true);
-                normalMap.SetActive(false);
+                currentLevelData.EtherMap.SetActive(true);
+                currentLevelData.NormalMap.SetActive(false);
                 rb.gravityScale = etherWorldGravityScale;
             }
         }
     }
 
     void Jump(bool _inputJump)
-    {   
-        
-        animator.SetFloat("Height",rb.velocity.y);
+    {
 
-        if(collider.IsTouchingLayers(LayerMask.GetMask("EtherZone")))
+        animator.SetFloat("Height", rb.velocity.y);
+
+        if (col.IsTouchingLayers(LayerMask.GetMask("EtherZone")))
         {
             //set velocity.y to 5
             rb.velocity = new Vector2(rb.velocity.x, 5);
@@ -276,14 +287,6 @@ public class PlayerMovement : MonoBehaviour
         return false;
     }
 
-    void Flip(float _velocity){
-        if(_velocity > 0.1f){
-            
-        }else if(_velocity < -0.1f){
-            
-        }
-    }
-
     void SetFacing()
     {
         if (inputMove.x > 0)
@@ -300,7 +303,7 @@ public class PlayerMovement : MonoBehaviour
 
     float CurrentWorldGravityScale()
     {
-        return etherMap.activeSelf ? etherWorldGravityScale : normalWorldGravityScale;
+        return (bool)(currentLevelData?.EtherMap.activeSelf) ? etherWorldGravityScale : normalWorldGravityScale;
     }
 
 }
