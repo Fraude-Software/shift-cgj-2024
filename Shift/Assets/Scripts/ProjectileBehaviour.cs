@@ -16,8 +16,11 @@ public class ProjectileBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-        rigidbody2D.MovePosition(rigidbody2D.transform.position + Vector3.right * Time.deltaTime * speed);
+        if(!direction){
+            rigidbody2D.MovePosition(rigidbody2D.transform.position + Vector3.right * Time.deltaTime * speed);
+        }else{
+            rigidbody2D.MovePosition(rigidbody2D.transform.position + Vector3.left * Time.deltaTime * speed);
+        }
         
     }
 
