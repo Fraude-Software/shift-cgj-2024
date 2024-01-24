@@ -87,6 +87,20 @@ public class PlayerMovement : MonoBehaviour
         Dash(inputDash);
         Move(inputMove);
         MaintainJump();
+
+        if(rb.velocity.y <-0.3f){
+            animator.SetBool("isJumping",false);
+            animator.SetBool("isLanding",true);
+        }else if(rb.velocity.y >0.3f){
+            animator.SetBool("isJumping",true);
+            animator.SetBool("isLanding",false);
+
+        }
+        if(IsGrounded()){
+            animator.SetBool("isGrounded",true);
+        }else{
+            animator.SetBool("isGrounded",false);
+        }
     }
 
     private void MaintainJump()
@@ -197,10 +211,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void Jump(bool _inputJump)
-    {
-
-        animator.SetFloat("Height", rb.velocity.y);
-
+    {   
         if (col.IsTouchingLayers(LayerMask.GetMask("EtherZone")))
         {
             //set velocity.y to 5
@@ -265,6 +276,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Fastfall(bool _inputFastfall)
     {
+
         if (switchCooldownLeft > 0f)
             return;
 
