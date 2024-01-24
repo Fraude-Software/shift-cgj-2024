@@ -2,8 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.Tilemaps;
 public class PlayerMovement : MonoBehaviour
 {
@@ -49,6 +52,11 @@ public class PlayerMovement : MonoBehaviour
     private float switchCooldownLeft;
     private bool isDead;
 
+    private Camera mainCamera;
+    private Animator camBackgroundAnimator;
+
+    private Volume volume;
+
     public Transform groundCheckLeft;
     public Transform groundCheckRight;
 
@@ -71,6 +79,9 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
+        mainCamera = Camera.main;
+        camBackgroundAnimator = mainCamera.GetComponentInChildren<Animator>();
+        volume = GameObject.Find("EtherVolume").GetComponent<Volume>();
     }
 
     // Update is called once per frame
@@ -155,6 +166,7 @@ public class PlayerMovement : MonoBehaviour
         inputSwitch = context.ReadValueAsButton();
         if (context.started)
         {
+            Debug.Log("aaa");
             Switch(inputSwitch);
         }
     }
@@ -218,12 +230,18 @@ public class PlayerMovement : MonoBehaviour
                 CurrentLevelData.EtherMap.SetActive(false);
                 CurrentLevelData.NormalMap.SetActive(true);
                 rb.gravityScale = normalWorldGravityScale;
+                camBackgroundAnimator.SetBool("isEther", false);
+                animator.SetBool("isEther",false);
+                volume.priority = -1;
             }
             else
             {
                 CurrentLevelData.EtherMap.SetActive(true);
                 CurrentLevelData.NormalMap.SetActive(false);
                 rb.gravityScale = etherWorldGravityScale;
+                camBackgroundAnimator.SetBool("isEther", true);
+                animator.SetBool("isEther",true);
+                volume.priority = 2;
             }
         }
     }
