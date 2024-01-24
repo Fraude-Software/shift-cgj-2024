@@ -166,6 +166,7 @@ public class PlayerMovement : MonoBehaviour
         inputSwitch = context.ReadValueAsButton();
         if (context.started)
         {
+            Debug.Log("aaa");
             Switch(inputSwitch);
         }
     }
@@ -230,6 +231,7 @@ public class PlayerMovement : MonoBehaviour
                 CurrentLevelData.NormalMap.SetActive(true);
                 rb.gravityScale = normalWorldGravityScale;
                 camBackgroundAnimator.SetBool("isEther", false);
+                animator.SetBool("isEther",false);
                 volume.priority = -1;
             }
             else
@@ -238,6 +240,7 @@ public class PlayerMovement : MonoBehaviour
                 CurrentLevelData.NormalMap.SetActive(false);
                 rb.gravityScale = etherWorldGravityScale;
                 camBackgroundAnimator.SetBool("isEther", true);
+                animator.SetBool("isEther",true);
                 volume.priority = 2;
             }
         }
