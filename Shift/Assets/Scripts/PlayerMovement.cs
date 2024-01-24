@@ -22,22 +22,19 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float dashTime;
     [SerializeField] private float etherWorldGravityScale;
     [SerializeField] private float normalWorldGravityScale;
+    [SerializeField] private float respawnTime;
 
     [SerializeField] private Animator animator;
     [SerializeField] private SpriteRenderer spriteRenderer;
 
-    private LevelData currentLevelData;
+    public LevelData CurrentLevelData { get; set; }
 
-    public LevelData CurrentLevelData
+    public void ChangeLevel(LevelData levelData)
     {
-        get
-        {
-            return currentLevelData;
-        }
-        set
-        {
-            currentLevelData = value;
-        }
+        bool etherMapActive = CurrentLevelData.EtherMap.activeSelf;
+        levelData.EtherMap.SetActive(etherMapActive);
+        levelData.NormalMap.SetActive(!etherMapActive);
+        CurrentLevelData = levelData;
     }
 
     private bool inputDash;
@@ -49,6 +46,7 @@ public class PlayerMovement : MonoBehaviour
     private bool facingRight = true;
     private float coyoTimeLeft;
     private float switchCooldownLeft;
+    private bool isDead;
 
     public Transform groundCheckLeft;
     public Transform groundCheckRight;
@@ -88,18 +86,24 @@ public class PlayerMovement : MonoBehaviour
         Move(inputMove);
         MaintainJump();
 
-        if(rb.velocity.y <-0.3f){
-            animator.SetBool("isJumping",false);
-            animator.SetBool("isLanding",true);
-        }else if(rb.velocity.y >0.3f){
-            animator.SetBool("isJumping",true);
-            animator.SetBool("isLanding",false);
+        if (rb.velocity.y < -0.3f)
+        {
+            animator.SetBool("isJumping", false);
+            animator.SetBool("isLanding", true);
+        }
+        else if (rb.velocity.y > 0.3f)
+        {
+            animator.SetBool("isJumping", true);
+            animator.SetBool("isLanding", false);
 
         }
-        if(IsGrounded()){
-            animator.SetBool("isGrounded",true);
-        }else{
-            animator.SetBool("isGrounded",false);
+        if (IsGrounded())
+        {
+            animator.SetBool("isGrounded", true);
+        }
+        else
+        {
+            animator.SetBool("isGrounded", false);
         }
     }
 
@@ -194,23 +198,23 @@ public class PlayerMovement : MonoBehaviour
     {
         if (_inputSwitch)
         {
-            if (currentLevelData.EtherMap.activeSelf)
+            if (CurrentLevelData.EtherMap.activeSelf)
             {
-                currentLevelData.EtherMap.SetActive(false);
-                currentLevelData.NormalMap.SetActive(true);
+                CurrentLevelData.EtherMap.SetActive(false);
+                CurrentLevelData.NormalMap.SetActive(true);
                 rb.gravityScale = normalWorldGravityScale;
             }
             else
             {
-                currentLevelData.EtherMap.SetActive(true);
-                currentLevelData.NormalMap.SetActive(false);
+                CurrentLevelData.EtherMap.SetActive(true);
+                CurrentLevelData.NormalMap.SetActive(false);
                 rb.gravityScale = etherWorldGravityScale;
             }
         }
     }
 
     void Jump(bool _inputJump)
-    {   
+    {
         if (col.IsTouchingLayers(LayerMask.GetMask("EtherZone")))
         {
             //set velocity.y to 5
@@ -314,7 +318,7 @@ public class PlayerMovement : MonoBehaviour
 
     float CurrentWorldGravityScale()
     {
-        return (bool)(currentLevelData?.EtherMap.activeSelf) ? etherWorldGravityScale : normalWorldGravityScale;
+        return (bool)(CurrentLevelData?.EtherMap.activeSelf) ? etherWorldGravityScale : normalWorldGravityScale;
     }
 
 }
