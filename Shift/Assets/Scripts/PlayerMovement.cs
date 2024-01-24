@@ -127,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckFall()
     {
-        if (Physics2D.OverlapArea(groundCheckLeft.position, groundCheckRight.position, LayerMask.GetMask("Death")) || transform.position.y < -100)
+        if (Physics2D.OverlapArea(groundCheckLeft.position, groundCheckRight.position, LayerMask.GetMask("Death")) || transform.position.y < -60)
         {
             Die();
         }
