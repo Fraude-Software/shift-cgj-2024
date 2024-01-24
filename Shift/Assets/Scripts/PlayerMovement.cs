@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 public class PlayerMovement : MonoBehaviour
 {
@@ -52,6 +53,8 @@ public class PlayerMovement : MonoBehaviour
     private float switchCooldownLeft;
     private bool isDead;
 
+    private GameObject source;
+
     private Camera mainCamera;
     private Animator camBackgroundAnimator;
 
@@ -82,11 +85,17 @@ public class PlayerMovement : MonoBehaviour
         mainCamera = Camera.main;
         camBackgroundAnimator = mainCamera.GetComponentInChildren<Animator>();
         volume = GameObject.Find("EtherVolume").GetComponent<Volume>();
+        source = GameObject.Find("Source_0");
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        if(Vector2.Distance(transform.position, source.transform.position) < 2f)
+        {
+            SceneManager.LoadScene("TeamNameScene");
+        }
+
         if(isDead)
         {
             return;
@@ -361,6 +370,8 @@ public class PlayerMovement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        Debug.Log(other);
+
         if (other.gameObject.layer == LayerMask.NameToLayer("Spikes"))
         {
             Die();
